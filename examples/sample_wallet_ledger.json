@@ -1,0 +1,18 @@
+{
+  "wallets": {
+    "ASIN_Codex_Ring_0001": {
+      "balance": 10.01,
+      "total_runs": 1
+    }
+  },
+  "events": [
+    {
+      "type": "powp_credit",
+      "node_id": "ASIN_Codex_Ring_0001",
+      "receipt_hash": "sample_receipt_hash_replace_after_run",
+      "run_count": 1,
+      "reward": 10.01,
+      "ledger_mode": "internal_prototype"
+    }
+  ]
+}
