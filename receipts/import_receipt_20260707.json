@@ -1,0 +1,28 @@
+{
+  "receipt_type": "repo_import_receipt",
+  "version": "0.1.0",
+  "date": "2026-07-07",
+  "repository": "dbottrader/ASINHHCCP8-Token-Project-",
+  "branch": "drive-import-20260707",
+  "steward": "Dennis Christie / CP8",
+  "source": "Google Drive scan plus Holbrook provenance spine",
+  "import_scope": [
+    "Ring Genesis specification",
+    "ASIN-NCEA v2.0 wallet prototype",
+    "ASIN-NCEA lineage index",
+    "HHC wallet / PoWP ledger scaffold",
+    "ACE GEM deployment references",
+    "operator interface references"
+  ],
+  "files_added": [
+    "README.md",
+    "asin_ncea/",
+    "tests/",
+    "pyproject.toml",
+    "docs/",
+    "manifests/",
+    "examples/",
+    "external_artifacts/drive/"
+  ],
+  "evidence_tier": "E2_LOCAL_SIMULATION_CANDIDATE"
+}
