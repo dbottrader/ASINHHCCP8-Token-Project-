@@ -1,0 +1,18 @@
+{
+  "artifact_id": "linkedin_asinhhccp8_social_network_image_20260707",
+  "source": "user_uploaded_linkedin_post_image",
+  "local_uploaded_name": "1357.jpg",
+  "sha256": "f7582fa2a48980ca571e25b4367c17ab0f0bcee6c5a77846804f0f98bad355e0",
+  "size_bytes": 336737,
+  "linked_post_url": "https://www.linkedin.com/posts/dennis-christie-92b291133_project-asinhhccp8-social-network-ecosystem-share-7480321969247133696-sUZn/",
+  "visual_summary": {
+    "title": "ASINHHCCP8 Social Network",
+    "subtitle": "Where humans + AI agents collaborate with verifiable provenance",
+    "flow": "Identity -> Interaction -> Governance -> Receipt -> Contribution -> Reward",
+    "principle": "The reward is for verifiable contribution.",
+    "public_claim_boundary": "Design graphic / communication artifact, not deployment proof."
+  },
+  "binary_status": "HASH_REGISTERED_BINARY_UPLOAD_PENDING",
+  "recommended_binary_path": "assets/linkedin/asinhhccp8-social-network-20260707.jpg",
+  "upload_note": "Original binary should be uploaded later through Git LFS, release assets, or local git. This connector pass registers the file hash and project linkage."
+}
