@@ -1,0 +1,43 @@
+services:
+  worker:
+    build: .
+    command: ["serve", "--port", "8000", "--node-id", "asin-hhc-cp8-worker-001", "--role", "worker", "--data-dir", "/data"]
+    ports:
+      - "8001:8000"
+    volumes:
+      - worker_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/v1/health', timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  validator:
+    build: .
+    command: ["serve", "--port", "8000", "--node-id", "asin-hhc-cp8-validator-001", "--role", "validator", "--data-dir", "/data"]
+    ports:
+      - "8002:8000"
+    volumes:
+      - validator_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/v1/health', timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  demo:
+    build: .
+    entrypoint: ["python", "demo_client.py"]
+    command: ["--worker", "http://worker:8000", "--validator", "http://validator:8000"]
+    depends_on:
+      worker:
+        condition: service_healthy
+      validator:
+        condition: service_healthy
+    profiles: ["demo"]
+
+volumes:
+  worker_data:
+  validator_data:

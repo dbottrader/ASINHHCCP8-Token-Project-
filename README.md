@@ -1,13 +1,37 @@
 # ASINHHCCP8 Token Project
 
-**Status:** initial Drive-backed public technical scaffold  
+**Status:** public technical scaffold with runnable receipt-driven node MVP  
 **Steward:** Dennis Christie / CP8  
 **Import date:** 2026-07-07  
-**Origin spine:** `dbottrader/Holbrook-CP8-HHC`  
+**Origin spine:** `dbottrader/Holbrook-CP8-HHC`
 
 This repository is the dedicated token / proof-of-work-process side of the ASIN-HHC / CP8 / ASINHHCCP8 architecture.
 
 It collects the Drive-indexed **Codex Ring Genesis**, **ASIN-NCEA v2.0**, **HHC Wallet**, **PoWP**, **PoG ledger**, **Human Node**, and **ACE GEM** materials into a testable project surface.
+
+---
+
+## Runnable node network MVP
+
+The public [`node_network/`](node_network/) package now provides a two-node worker/validator demo with:
+
+- deterministic SHA-256, canonical-JSON, and Merkle-root tasks;
+- persistent Ed25519 node identities;
+- signed execution receipts;
+- append-only JSONL receipt logs;
+- independent signature verification and deterministic replay;
+- Docker Compose startup and a complete demonstration client.
+
+```bash
+git clone https://github.com/dbottrader/ASINHHCCP8-Token-Project-.git
+cd ASINHHCCP8-Token-Project-/node_network
+docker compose up -d worker validator
+docker compose run --rm demo
+```
+
+The real-world reused-miner hardware specification, safety boundary, node classes, and promotion gates are in [`node_network/BUILD_SPEC.md`](node_network/BUILD_SPEC.md).
+
+This is an auditable MVP, not a production consensus network or a financial instrument. The current highest claim is a local two-node integration pass; independent reproduction is pending.
 
 ---
 
@@ -37,6 +61,7 @@ input constants → K_geo → K_stream → K_fusion → Merkle root → receipt 
 
 ```text
 asin_ncea/                  runnable local prototype modules
+node_network/               runnable worker/validator receipt network MVP
 examples/                   sample receipt and wallet ledgers
 docs/                       Ring Genesis, PoWP, Human Node, interference/resync notes
 manifests/                  Codex Ring Genesis manifest
@@ -51,7 +76,7 @@ external_artifacts/drive/   Google Drive provenance indexes
 Valid claim:
 
 ```text
-Prototype ASINHHCCP8 / ASIN-NCEA token project for deterministic key-fusion simulation, Merkle receipts, replay, and internal HHC PoWP ledger crediting.
+Prototype ASINHHCCP8 / ASIN-NCEA project for deterministic key-fusion simulation, signed execution receipts, Merkle commitments, replay verification, and internal HHC PoWP ledger experiments.
 ```
 
 Non-claims:
@@ -66,14 +91,14 @@ Not empirical physical-frequency proof without instrumentation data.
 
 ---
 
-## Quick local run
+## Original local prototype run
 
 ```bash
 python -m asin_ncea.ring_genesis --out examples/sample_ring_genesis_run.jsonj
 python -m pytest tests
 ```
 
-The code is intentionally dependency-light for reproducibility. It implements the receipt/ledger/replay structure without claiming production security.
+The code is intentionally dependency-light for reproducibility. It implements receipt/ledger/replay structures without claiming production security.
 
 ---
 
