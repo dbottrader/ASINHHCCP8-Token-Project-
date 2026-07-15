@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ASIN • Pipeline Hub (Compose ⇄ Seal ⇄ Play ⇄ Verify)</title>
+<style>
+:root{--bg:#071227;--panel:#0f1d3a;--line:#203356;--ink:#e7f4ff;--mut:#97b0d6;--ok:#58e0a7;--warn:#f8d05b;--err:#ff7a7a;--accent:#68b6ff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(1200px 600px at 50% 40%,#0a1226,#061b34 60%,#051d2b 100%),var(--bg);color:var(--ink);font:500 15px/1.55 system-ui,Segoe UI,Roboto,sans-serif}
+header{padding:16px 18px;border-bottom:1px solid var(--line)}header h1{margin:0;font:800 18px/1.2 system-ui}.boundary{margin-top:8px;color:#b9dfff;font-size:12px}
+main{max-width:1200px;margin:14px auto;padding:12px;display:grid;gap:12px}.grid{display:grid;gap:12px}.cols-2{grid-template-columns:1fr 1fr}@media(max-width:850px){.cols-2{grid-template-columns:1fr}}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0));border:1px solid var(--line);border-radius:14px;padding:14px}.card h2{margin:0 0 10px;font:800 16px/1.2 system-ui;color:#d9ecff}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+textarea,input,select{background:#0b2340;border:1px solid #183c6a;border-radius:10px;color:var(--ink);padding:10px;font:500 14px/1.4 ui-monospace,Menlo,Consolas,monospace}textarea{width:100%;min-height:90px;resize:vertical}input[type=number]{width:96px}.wide{width:100%}
+.btn{background:#0b2b50;border:1px solid #285c93;color:#dff3ff;border-radius:10px;padding:8px 10px;cursor:pointer}.btn:hover{filter:brightness(1.08)}.pill{border-radius:999px;padding:6px 10px;font:600 12px/1 system-ui}.ok{color:#00341b;background:linear-gradient(180deg,#5df0b5,#38d09a);border:none}.warn{background:#2d2506;color:#ffe59a;border:1px solid #5a4d16}.err{background:#3a0e15;color:#ffc9c9;border:1px solid #6b1d28}.mono{font-family:ui-monospace,Menlo,Consolas,monospace}.small{font-size:12px;color:var(--mut)}
+svg{width:100%;height:auto;display:block;background:#061931;border:1px solid #193656;border-radius:12px}.kv{display:grid;grid-template-columns:190px 1fr;gap:8px;align-items:center}@media(max-width:560px){.kv{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<h1>ASIN • Pipeline Hub <span class="small">Compose ⇄ Seal ⇄ Play ⇄ Verify</span></h1>
+<div class="boundary">Public browser prototype. SHA-256 here seals a deterministic STF-1 bundle; it does not by itself establish identity, authority, physical effects, or production security.</div>
+</header>
+<main>
+<section class="card">
+<h2>1 • Input → Bit Stream</h2>
+<div class="grid cols-2">
+<div><div class="row"><button class="btn pill" id="btnUseText">Use as Text</button><button class="btn pill" id="btnUseBin">Use as Binary</button><button class="btn pill" id="btnClearIn">Clear</button></div><textarea id="src" placeholder="Type a message or paste raw 0/1"></textarea><div class="small">Text is UTF-8 → bits. Binary mode keeps only 0 and 1.</div></div>
+<div><label class="small">Bit Stream</label><textarea id="bits" class="mono" readonly></textarea><div class="row small"><span>Seed Hz</span><input id="seedHz" type="number" value="432" min="20" max="20000"><span>BPM</span><input id="bpm" type="number" value="120" min="10" max="300"><span>Low ×</span><input id="lowMul" value="1/1"><span>High ×</span><input id="highMul" value="3/2"></div></div>
+</div>
+</section>
+
+<section class="card">
+<h2>2 • Spiral Composer</h2>
+<div class="grid cols-2">
+<div><svg id="spiralSVG" viewBox="0 0 600 600" aria-label="STF-1 ring-sector rendering"></svg></div>
+<div class="kv">
+<div>Rings</div><input id="rings" type="number" value="6" min="1" max="32">
+<div>Sectors/ring</div><input id="sectors" type="number" value="64" min="8" max="720">
+<div>Start angle°</div><input id="startDeg" type="number" value="-90">
+<div>Gap (px)</div><input id="gap" type="number" value="3" min="0" max="20">
+<div>Inner radius</div><input id="rInner" type="number" value="26">
+<div>Track width</div><input id="trackW" type="number" value="14">
+<div>Direction</div><select id="dir"><option value="cw">CW</option><option value="ccw">CCW</option></select>
+<div>Render</div><button class="btn ok" id="btnRender">Render Spiral</button>
+</div>
+</div>
+</section>
+
+<section class="card">
+<h2>3 • Bundle (STF-1) + Truth Seal</h2>
+<div class="grid cols-2">
+<div><label class="small">STF-1 JSON</label><textarea id="stfJSON" class="mono" style="min-height:260px" readonly></textarea><div class="row"><button class="btn" id="btnDownload">Download JSON</button><input class="btn" id="fileIn" type="file" accept=".json,application/json"><button class="btn" id="btnLoad">Load JSON</button></div></div>
+<div><div class="kv"><div>Compute Seal</div><button class="btn ok" id="btnSeal">SHA-256</button><div>Computed</div><input id="sealOut" class="mono wide" readonly><div>Expected</div><input id="sealExpect" class="mono wide" placeholder="paste expected SHA-256"><div>Status</div><div id="sealStatus" class="pill warn">—</div></div><hr style="border-color:#17345a;opacity:.4;margin:14px 0"><div class="kv"><div>Decode bits → text</div><button class="btn" id="btnDecode">Decode</button><div>Decoded UTF-8</div><textarea id="decoded" class="mono" readonly></textarea></div></div>
+</div>
+</section>
+
+<section class="card">
+<h2>4 • Playback</h2>
+<div class="row"><button class="btn" id="btnPlay">Play</button><button class="btn" id="btnStop">Stop</button><span class="small">1 = high tone, 0 = low tone. Browser audio requires a user gesture.</span></div>
+<div id="flashInfo" class="small" style="margin-top:8px">Playback: off</div>
+</section>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+const enc=s=>new TextEncoder().encode(s);
+const dec=b=>new TextDecoder().decode(b);
+function cleanseBits(s){return String(s||"").replace(/[^01]/g,"")}
+function textToBits(s){return [...enc(s)].map(b=>b.toString(2).padStart(8,"0")).join("")}
+function bitsToText(bits){const clean=cleanseBits(bits);const bytes=[];for(let i=0;i+7<clean.length;i+=8)bytes.push(parseInt(clean.slice(i,i+8),2));return dec(new Uint8Array(bytes))}
+function parseRatio(value){const s=String(value).trim();if(s.includes("/")){const [n,d]=s.split("/").map(Number);if(!Number.isFinite(n)||!Number.isFinite(d)||d===0)throw new Error("invalid ratio");return n/d}const n=Number(s);if(!Number.isFinite(n))throw new Error("invalid ratio");return n}
+function stable(value){if(Array.isArray(value))return value.map(stable);if(value&&typeof value==="object"){const out={};for(const k of Object.keys(value).sort())out[k]=stable(value[k]);return out}return value}
+function canonicalJSON(value){return JSON.stringify(stable(value))}
+async function sha256Hex(text){const buf=await crypto.subtle.digest("SHA-256",enc(text));return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("")}
+
+function buildObject(){return {header:{magic:"STF1",version:1},layout:{mode:"rings",rings:+$("#rings").value,sectors:+$("#sectors").value,start_deg:+$("#startDeg").value,dir:$("#dir").value,gap:+$("#gap").value,inner_radius:+$("#rInner").value,track_width:+$("#trackW").value},mapping:{bit_order:"ring_major"},payload:{bits:cleanseBits($("#bits").value)},audio:{base_hz:+$("#seedHz").value,low_mul:$("#lowMul").value.trim(),high_mul:$("#highMul").value.trim(),bpm:+$("#bpm").value,duty:100},seal:{algorithm:"sha256",canonicalization:"sorted-json-v1",sha256:""}}}
+function renderSpiral(){const svg=$("#spiralSVG");const W=600,H=600,cx=W/2,cy=H/2;const bits=cleanseBits($("#bits").value);const rings=+$("#rings").value,sectors=+$("#sectors").value,startDeg=+$("#startDeg").value,gapPx=+$("#gap").value,innerR=+$("#rInner").value,trackW=+$("#trackW").value,cw=$("#dir").value==="cw";const total=rings*sectors;const b=bits.padEnd(total,"0");const paths=[];for(let r=0;r<rings;r++){const radius=innerR+r*(trackW+gapPx)+trackW/2;for(let s=0;s<sectors;s++){if(b[r*sectors+s]!=="1")continue;const a0=(startDeg+(cw?1:-1)*(360/sectors)*s)*Math.PI/180;const a1=(startDeg+(cw?1:-1)*(360/sectors)*(s+1))*Math.PI/180;const x0=cx+Math.cos(a0)*radius,y0=cy+Math.sin(a0)*radius,x1=cx+Math.cos(a1)*radius,y1=cy+Math.sin(a1)*radius;paths.push(`<path d="M ${x0.toFixed(2)} ${y0.toFixed(2)} A ${radius.toFixed(2)} ${radius.toFixed(2)} 0 0 ${cw?1:0} ${x1.toFixed(2)} ${y1.toFixed(2)}" stroke="#8be7ff" stroke-width="${trackW}" fill="none"/>`)}}svg.innerHTML=`<desc>${canonicalJSON(buildObject().header)}</desc>${paths.join("")}`}
+function buildSTF(){const current=buildObject();$("#stfJSON").value=JSON.stringify(current,null,2);renderSpiral()}
+function updateBitsFromText(){$("#bits").value=textToBits($("#src").value);buildSTF()}
+function updateBitsFromBinary(){$("#bits").value=cleanseBits($("#src").value);buildSTF()}
+function clearInput(){$("#src").value="";$("#bits").value="";buildSTF()}
+async function computeSeal(){const j=JSON.parse($("#stfJSON").value);const sealInput={header:j.header,layout:j.layout,mapping:j.mapping,payload:j.payload,audio:j.audio};const hex=await sha256Hex(canonicalJSON(sealInput));j.seal.sha256=hex;$("#stfJSON").value=JSON.stringify(j,null,2);$("#sealOut").value=hex;const exp=$("#sealExpect").value.trim().toLowerCase();if(exp){const match=exp===hex;$("#sealStatus").textContent=match?"MATCH ✔":"MISMATCH ✖";$("#sealStatus").className="pill "+(match?"ok":"err")}else{$("#sealStatus").textContent="Computed";$("#sealStatus").className="pill warn"}}
+function download(name,text){const a=document.createElement("a");const url=URL.createObjectURL(new Blob([text],{type:"application/json"}));a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function hydrate(j){$("#bits").value=cleanseBits(j.payload?.bits||"");$("#rings").value=j.layout?.rings??6;$("#sectors").value=j.layout?.sectors??64;$("#startDeg").value=j.layout?.start_deg??-90;$("#dir").value=j.layout?.dir??"cw";$("#gap").value=j.layout?.gap??3;$("#rInner").value=j.layout?.inner_radius??26;$("#trackW").value=j.layout?.track_width??14;$("#seedHz").value=j.audio?.base_hz??432;$("#lowMul").value=j.audio?.low_mul??"1/1";$("#highMul").value=j.audio?.high_mul??"3/2";$("#bpm").value=j.audio?.bpm??120;$("#stfJSON").value=JSON.stringify(j,null,2);renderSpiral()}
+
+let ac=null,osc=null,gain=null,timer=null,playing=false;
+function stopAll(){playing=false;if(timer){clearInterval(timer);timer=null}if(osc){try{osc.stop()}catch{}osc.disconnect();osc=null}if(gain){gain.disconnect();gain=null}if(ac){ac.close().catch(()=>{});ac=null}document.body.style.backgroundColor="";$("#flashInfo").textContent="Playback: off"}
+async function playBits(){stopAll();const j=JSON.parse($("#stfJSON").value);const bits=cleanseBits(j.payload?.bits||"");if(!bits){alert("No bits to play");return}const base=+j.audio.base_hz,fLow=base*parseRatio(j.audio.low_mul),fHigh=base*parseRatio(j.audio.high_mul),beatMs=60000/Math.max(10,Math.min(300,+j.audio.bpm));ac=new (window.AudioContext||window.webkitAudioContext)();await ac.resume();gain=ac.createGain();gain.gain.value=.08;gain.connect(ac.destination);osc=ac.createOscillator();osc.type="sine";osc.connect(gain);osc.start();let i=0;playing=true;const tick=()=>{if(!playing)return;const bit=bits[i++%bits.length];osc.frequency.setTargetAtTime(bit==="1"?fHigh:fLow,ac.currentTime,.01);document.body.style.backgroundColor=bit==="1"?"rgba(120,240,200,.06)":"rgba(120,160,255,.06)";$("#flashInfo").textContent=`Playback: bit ${bit}, ${Math.round(bit==="1"?fHigh:fLow)} Hz, ${Math.round(1000/beatMs*100)/100} symbols/s`};tick();timer=setInterval(tick,beatMs)}
+
+$("#btnUseText").onclick=updateBitsFromText;$("#btnUseBin").onclick=updateBitsFromBinary;$("#btnClearIn").onclick=clearInput;$("#btnRender").onclick=renderSpiral;$("#btnSeal").onclick=computeSeal;$("#btnDecode").onclick=()=>{$("#decoded").value=bitsToText(JSON.parse($("#stfJSON").value).payload?.bits||"")};$("#btnPlay").onclick=playBits;$("#btnStop").onclick=stopAll;
+$("#btnDownload").onclick=()=>download(`asin-stf1-${new Date().toISOString().replace(/[:.]/g,"-")}.json`,$("#stfJSON").value||"{}");$("#btnLoad").onclick=async()=>{const f=$("#fileIn").files?.[0];if(!f)return;try{hydrate(JSON.parse(await f.text()))}catch(e){alert(`Invalid STF-1 JSON: ${e.message}`)}};
+for(const id of ["seedHz","bpm","lowMul","highMul","rings","sectors","startDeg","gap","rInner","trackW","dir"])$("#"+id).addEventListener("change",buildSTF);
+$("#src").value="WE LOVE YOU";updateBitsFromText();computeSeal();
+</script>
+</body>
+</html>
