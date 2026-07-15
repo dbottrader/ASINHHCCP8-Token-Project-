@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ASIN Harmonic Ring — STF1</title>
+<style>
+html,body{margin:0;height:100%;background:#000;overflow:hidden;color:#9ef;font-family:monospace}
+canvas{display:block;margin:auto;position:absolute;inset:0}
+#meta{position:fixed;bottom:8px;left:8px;font-size:12px;z-index:2}
+#boundary{position:fixed;top:8px;left:8px;right:8px;padding:7px 10px;border:1px solid #163450;background:#061223cc;border-radius:8px;font:12px/1.35 system-ui;color:#b9dfff;z-index:2}
+</style>
+</head>
+<body>
+<div id="boundary">Public UI prototype: binary ring visualization and browser-audio experiment. This is not a physical-frequency validation claim.</div>
+<canvas id="rings"></canvas>
+<div id="meta">ASIN STF1 — 432 Hz / “WE LOVE YOU” — tap to start or stop audio</div>
+<script>
+const STF={
+  header:{magic:"STF1",version:1},
+  layout:{rings:6,sectors:64,start_deg:-90,gap:3},
+  payload:{bits:"0101011101000101001000000100110001001111010101100100010100100000010110010100111101010101"},
+  audio:{base_hz:432,high_mul:1.5,bpm:120}
+};
+
+const cvs=document.getElementById("rings");
+const ctx=cvs.getContext("2d");
+
+function resize(){
+  const dpr=Math.max(1,window.devicePixelRatio||1);
+  cvs.width=Math.floor(innerWidth*dpr);
+  cvs.height=Math.floor(innerHeight*dpr);
+  cvs.style.width=innerWidth+"px";
+  cvs.style.height=innerHeight+"px";
+  ctx.setTransform(dpr,0,0,dpr,innerWidth/2,innerHeight/2);
+  draw();
+}
+
+function draw(){
+  ctx.clearRect(-innerWidth/2,-innerHeight/2,innerWidth,innerHeight);
+  const {rings,sectors,start_deg,gap}=STF.layout;
+  const bits=STF.payload.bits;
+  const radiusStep=Math.min(innerWidth,innerHeight)/(2*(rings+1));
+  for(let r=0;r<rings;r++){
+    for(let s=0;s<sectors;s++){
+      const idx=r*sectors+s;
+      const bit=bits[idx%bits.length];
+      const a1=(start_deg+s*(360/sectors))*Math.PI/180;
+      const a2=(start_deg+(s+1)*(360/sectors)-gap)*Math.PI/180;
+      const radius=radiusStep*(r+1);
+      ctx.beginPath();
+      ctx.arc(0,0,radius,a1,a2);
+      ctx.strokeStyle=bit==="1"?`hsl(${s*5},100%,60%)`:`#111`;
+      ctx.lineWidth=radiusStep*0.4;
+      ctx.stroke();
+    }
+  }
+}
+
+addEventListener("resize",resize);
+resize();
+
+const AudioCtx=window.AudioContext||window.webkitAudioContext;
+let ac=null;
+let playing=false;
+let pulseTimer=null;
+
+function stopAudio(){
+  playing=false;
+  if(pulseTimer){clearTimeout(pulseTimer);pulseTimer=null;}
+}
+
+function pulse(){
+  if(!playing||!ac)return;
+  const osc=ac.createOscillator();
+  const gain=ac.createGain();
+  const beat=(60/STF.audio.bpm)*1000;
+  osc.type="sine";
+  osc.frequency.value=STF.audio.base_hz;
+  osc.connect(gain).connect(ac.destination);
+  gain.gain.setValueAtTime(0.2,ac.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+beat/2000);
+  osc.start();
+  osc.stop(ac.currentTime+beat/1000);
+  pulseTimer=setTimeout(pulse,beat);
+}
+
+document.body.addEventListener("click",async()=>{
+  if(!ac)ac=new AudioCtx();
+  if(ac.state==="suspended")await ac.resume();
+  playing=!playing;
+  if(playing)pulse();else stopAudio();
+});
+</script>
+</body>
+</html>

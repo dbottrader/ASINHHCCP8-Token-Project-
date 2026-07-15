@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ASIN • Spiral Roadmap (Devices 1–15)</title>
+<style>
+:root{--bg:#071227;--ink:#e6f7ff;--mut:#9fc7dd;--line:#203356;--card:#0b1730}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(1200px 600px at 50% 50%,#0a1226,#060b18);color:var(--ink);font:500 14px/1.6 system-ui}
+h1{margin:0;padding:14px 16px;border-bottom:1px solid var(--line);font-weight:800}.boundary{margin:12px auto 0;max-width:1076px;padding:10px 12px;border:1px solid #285070;border-radius:12px;background:#071a33;color:#bfe3ff}
+main{max-width:1100px;margin:14px auto;padding:12px;display:grid;gap:12px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}.card h3{margin:0;padding:10px 12px;border-bottom:1px solid var(--line);font-size:12px;letter-spacing:.12em;color:#cfe9ff;text-transform:uppercase}.pad{padding:12px}.grid{display:grid;gap:10px}.two{grid-template-columns:1.2fr .8fr}@media(max-width:980px){.two{grid-template-columns:1fr}}small,.mut{color:var(--mut)}#spiral{width:100%;height:520px;background:#020d1f;border:1px solid #223;border-radius:12px;display:block}.badge{display:inline-block;padding:3px 8px;border:1px solid #335;border-radius:999px;background:#061429;color:#9fe2ff;font-size:.8em}.node{cursor:pointer}.node:hover{filter:brightness(1.35)}pre{white-space:pre-wrap;background:#061429;border:1px solid #173050;border-radius:10px;padding:10px;overflow:auto}
+</style>
+</head>
+<body>
+<h1>ASIN • Spiral Roadmap</h1>
+<div class="boundary"><strong>Evidence boundary:</strong> this is an interactive design and research roadmap. “UI prototype” means a browser interface exists. “Concept” means proposed exploration only. It does not assert validated medical treatment, anti-gravity, quantum communication, energy harvesting, or other physical performance.</div>
+<main>
+<section class="card">
+<h3>Spiral Overview</h3>
+<div class="pad grid two">
+<div><svg id="spiral" viewBox="-320 -320 640 640" xmlns="http://www.w3.org/2000/svg" aria-label="spiral roadmap"></svg></div>
+<div><span class="badge">Select a numbered node</span><div id="detail" class="pad" style="margin-top:10px;background:#071a33;border:1px solid #1c2a4b;border-radius:12px"><h2 id="d_title" style="margin:.2rem 0">—</h2><p id="d_purpose" class="mut">Select a device on the spiral.</p><ul id="d_points" style="margin:.4rem 0 0 1rem"></ul><p id="d_status" class="badge">Status: —</p></div><div style="margin-top:10px" class="mut">Inner rings: foundations. Mid rings: communication and biological mapping interfaces. Outer rings: speculative research directions requiring independent evidence.</div></div>
+</div>
+</section>
+<section class="card"><h3>Spiral Storage Mini-Spec (STF-1)</h3><div class="pad"><p class="mut">A shared JSON envelope for browser rendering, export, audio mapping, and deterministic sealing:</p><pre>STF-1 (Spiral Tape Format v1)
+
+header.magic      = "STF1"
+header.version    = 1
+layout.mode       = "rings" | "single_spiral"
+layout.rings      = uint16
+layout.sectors    = uint16
+layout.start_deg  = float
+layout.dir        = "cw" | "ccw"
+mapping.bit_order = "ring_major" | "sector_major"
+payload.bits      = "0101..."
+audio.base_hz     = float
+audio.low_mul     = string ratio
+audio.high_mul    = string ratio
+audio.bpm         = float
+audio.duty        = float (0..100)
+seal.sha256       = SHA-256(canonical STF-1 bundle without seal value)
+
+Addressing:
+addr = {ring:0..R-1, sector:0..S-1}
+
+Rendering:
+filled segment = 1; gap = 0; theme may invert presentation.</pre></div></section>
+<section class="card"><h3>UI ↔ Schematic ↔ Hardware Bridge</h3><div class="pad"><ul><li><strong>Embedded schematic layer:</strong> each implemented device page may carry a block diagram, parts list, and interface specification.</li><li><strong>One JSON, multiple targets:</strong> the same validated STF-1 bundle can populate a UI, an SVG representation, firmware test vectors, and node-network receipts.</li><li><strong>Safety and authority rails:</strong> checksums, signatures, limits, consent where applicable, logs, and explicit evidence grades must precede any hardware or human-subject deployment.</li></ul></div></section>
+</main>
+<script>
+const devices=[
+{id:1,name:"Device #1 — Frequency Emitter",ring:1,theta:10,status:"UI prototype",purpose:"Browser tone-generation and harmonic-ratio interface.",points:["432-family source prototype","Ratio controls","Foundation for later audio demos"]},
+{id:2,name:"Device #2 — Chord Mandala",ring:1,theta:60,status:"UI prototype",purpose:"Maps layered tones to rotating visual geometry.",points:["Flower/Seed-of-Life-inspired grids","Phase-linked rings","Visual chord lattice"]},
+{id:3,name:"Device #3 — Disk Decoder",ring:1,theta:110,status:"UI prototype",purpose:"Translates text, binary representations, and tone mappings.",points:["Arecibo-inspired packet layout","Framing experiments","Import/export"]},
+{id:4,name:"Device #4 — Trinity Glyph Lab",ring:1,theta:160,status:"UI prototype",purpose:"Encodes messages into trinity and spiral glyph interfaces.",points:["Binary-in-rings","Glyph construction","Multi-phase visuals"]},
+{id:5,name:"Device #5 — DNA Resonator",ring:2,theta:205,status:"UI prototype",purpose:"Maps symbolic base-pair labels to selected harmonic ratios and animation.",points:["A/T/C/G symbolic mapping","Ratio visualization","Preset and seal interface"]},
+{id:6,name:"Device #6 — Spiral Crop Disk",ring:2,theta:250,status:"UI prototype",purpose:"Ring/sector binary storage representation and 2-FSK browser playback.",points:["STF-1 encoding","SVG/JSON export","SHA-256 seal"]},
+{id:7,name:"Device #7 — 2-FSK RX",ring:2,theta:295,status:"UI prototype",purpose:"Proposed microphone-side 2-FSK decoding and seal verification interface.",points:["Round-trip communications test surface","Threshold and BPM controls","Scope-style meters"]},
+{id:8,name:"Device #8 — Harmonic Key Vault",ring:3,theta:330,status:"Concept",purpose:"Research concept for combining measured user signals with standard cryptographic key derivation.",points:["Biometric inputs must not be treated as raw secret keys","Secure randomness and KDF required","Consent and recovery design"]},
+{id:9,name:"Device #9 — Energy Harvester",ring:3,theta:15,status:"Concept",purpose:"Exploratory instrumentation concept for measuring resonant transduction, without an energy-gain claim.",points:["Coil and plate instrumentation","Input/output power measurement","Independent replication required"]},
+{id:10,name:"Device #10 — Field Geometry Testbed",ring:3,theta:60,status:"Concept",purpose:"Proposed field-geometry simulation and measurement interface; no lift or anti-gravity claim is established.",points:["Field simulation","Sensor capture","Safety limits"]},
+{id:11,name:"Device #11 — Distributed Synchronizer",ring:4,theta:100,status:"Concept",purpose:"Resilient synchronization and replicated-memory research direction.",points:["Time beacons","CRDT-style merge","Redundant signed receipts"]},
+{id:12,name:"Device #12 — Optical Bridge",ring:4,theta:140,status:"Concept",purpose:"Optical communication and encoding research direction; quantum properties require laboratory evidence.",points:["Optical modes","Authenticated packets","Measurement-first design"]},
+{id:13,name:"Device #13 — Therapeutic Interface",ring:4,theta:180,status:"Concept",purpose:"Human-subject interface concept only; no diagnosis or treatment claim.",points:["Clinical governance required","Dose and exposure limits","Consent and adverse-event logs"]},
+{id:14,name:"Device #14 — Immersive Geometry",ring:4,theta:220,status:"Concept",purpose:"Guided audiovisual geometry for subjective-state research under safety controls.",points:["Session limits","Accessibility controls","After-session reporting"]},
+{id:15,name:"Device #15 — Harmonic Ark",ring:5,theta:270,status:"Concept",purpose:"Long-range vision for a governed network of independently measured and verified nodes.",points:["Epoch beacons","Public evidence registry","Stewardship and audit"]}
+];
+const svg=document.getElementById("spiral");
+const ns="http://www.w3.org/2000/svg";
+function el(name,attrs){const n=document.createElementNS(ns,name);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,v);return n}
+function show(d){document.getElementById("d_title").textContent=d.name;document.getElementById("d_purpose").textContent=d.purpose;const ul=document.getElementById("d_points");ul.textContent="";for(const p of d.points){const li=document.createElement("li");li.textContent=p;ul.appendChild(li)}document.getElementById("d_status").textContent="Status: "+d.status}
+function draw(){svg.textContent="";const rings=5,maxR=280,step=maxR/(rings+.6);for(let i=1;i<=rings;i++)svg.appendChild(el("circle",{cx:0,cy:0,r:(i*step).toFixed(1),fill:"none",stroke:"#1b2a47","stroke-width":1.2}));for(const d of devices){const r=d.ring*step,a=(d.theta-90)*Math.PI/180,x=r*Math.cos(a),y=r*Math.sin(a),color=d.status==="UI prototype"?"#7af5c7":"#9fd0ff";const node=el("circle",{cx:x,cy:y,r:9,fill:color,stroke:"#051224","stroke-width":1.5,class:"node",tabindex:0,"aria-label":d.name});node.addEventListener("click",()=>show(d));node.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" ")show(d)});svg.appendChild(node);const tx=el("text",{x:x+13,y:y+4,fill:"#d9ecff","font-size":11,"font-family":"ui-monospace"});tx.textContent=d.id;svg.appendChild(tx)}}
+draw();show(devices[0]);
+</script>
+</body>
+</html>
