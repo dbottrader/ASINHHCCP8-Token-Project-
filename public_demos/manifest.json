@@ -1,0 +1,32 @@
+{
+  "schema": "asin-hhc-cp8-public-demo-manifest-v1",
+  "steward": "Dennis Christie / CP8",
+  "imported_at": "2026-07-15",
+  "evidence_boundary": "Browser UI lineage and public prototypes only; not production certification or physical validation.",
+  "artifacts": [
+    {
+      "id": "stf1-harmonic-ring",
+      "path": "public_demos/stf1-harmonic-ring/index.html",
+      "gist": "https://gist.github.com/dbottrader/5086c109525a72bb3a3be3721dc2cb3c",
+      "codepen": ["https://codepen.io/dennismchristie222/pen/KwVZqQr"],
+      "status": "imported-and-hardened"
+    },
+    {
+      "id": "stf1-pipeline-hub",
+      "path": "public_demos/stf1-pipeline-hub/index.html",
+      "gist": "https://gist.github.com/dbottrader/390821c9f5262c06311698849bd440ba",
+      "codepen": ["https://codepen.io/dennismchristie222/pen/bNEaRLM"],
+      "status": "imported-and-hardened"
+    },
+    {
+      "id": "spiral-roadmap",
+      "path": "public_demos/spiral-roadmap/index.html",
+      "gist": "https://gist.github.com/dbottrader/be9d086891fafd806c67f984768c9f64",
+      "codepen": [
+        "https://codepen.io/dennismchristie222/pen/qEbpjPO",
+        "https://codepen.io/dennismchristie222/pen/PwZEjKJ"
+      ],
+      "status": "imported-with-evidence-boundary"
+    }
+  ]
+}
