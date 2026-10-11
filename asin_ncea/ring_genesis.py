@@ -70,7 +70,10 @@ def run_ring_genesis(seed: str = "CP8_RING_GENESIS_SEED", run_count: int = 1) ->
     base_receipt["merkle_root"] = merkle_root
     base_receipt["checks"]["merkle_audit"] = "PASS"
     receipt = attach_receipt_hash(base_receipt)
+    # Record the round-trip verification result, then re-attach the hash so
+    # the recorded result is itself covered (hash-then-mutate invalidates).
     receipt["replay_verified"] = verify_receipt_hash(receipt)
+    receipt = attach_receipt_hash(receipt)
     return receipt
 
 
