@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+title: ASINHHCCP8 Token Project
+message: If you use this work, please cite it as below.
+type: software
+authors:
+  - given-names: Dennis
+    family-names: Christie
+date-released: 2026-07-07
+license: MIT
+repository-code: https://github.com/dbottrader/ASINHHCCP8-Token-Project-
