@@ -56,6 +56,19 @@ The browser demos are public UI lineage. They do not establish production securi
 
 ---
 
+## Official ecosystem receiving wallet
+
+The project owner designated the following address for ecosystem operations and public ecosystem donations on Base. It accepts **native ETH on Base**; it is not an HHC token contract.
+
+- Address: `0xC9a22B7685f14683A98a0f174BF5F1C92C7125DD`
+- Network: Base Mainnet (chain ID 8453)
+- Explorer: https://basescan.org/address/0xC9a22B7685f14683A98a0f174BF5F1C92C7125DD
+- Canonical record: [OFFICIAL_RECEIVING_WALLET.md](OFFICIAL_RECEIVING_WALLET.md)
+
+**Minting status boundary (checked 2026-11-02):** the connected CP8 ledger backend is configured as simulated, with the on-chain backend disabled and explicit no-mint guards. The runnable node-network MVP does not yet implement token issuance. Internal HHC/PoWP credits must not be represented as an externally deployed ERC-20 token without a verified contract address and transaction evidence.
+
+---
+
 ## Core concept
 
 The project links four layers:
